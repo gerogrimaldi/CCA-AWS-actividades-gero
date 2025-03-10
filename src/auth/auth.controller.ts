@@ -17,4 +17,9 @@ export class AuthController {
     return this.authService.register(registerAuthDto);
   }
 
+  @Patch('update/:id')
+  updateUser(@Param('id') id: string, @Body() registerAuthDto: RegisterAuthDto) {
+    return this.authService.updateUser(id, registerAuthDto);
+  }
+
 }

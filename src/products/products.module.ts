@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { PrismaService } from 'prisma/prisma.service';
-// import { JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   controllers: [ProductsController],
@@ -12,7 +12,7 @@ import { PrismaService } from 'prisma/prisma.service';
       useClass: ProductsService
     }, 
     PrismaService,
-    //  JwtService
+     JwtService
   ],
 })
 export class ProductsModule {}

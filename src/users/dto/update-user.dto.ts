@@ -9,5 +9,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsDate()
     @IsNotEmpty()
     @ApiProperty()
-    updatedAt: Date;
+    updatedAt: Date = new Date();
 }

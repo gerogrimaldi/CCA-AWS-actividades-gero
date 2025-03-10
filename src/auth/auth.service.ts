@@ -40,5 +40,22 @@ export class AuthService {
     return transformedUser;
   }
 
+  async updateUser(id:string, registerAuthDto: RegisterAuthDto) {
+    const hashedPassword: string = await bcrypt.hash(registerAuthDto.password, 10);
+    const user = await this.userService.update(
+      id,
+      {
+        username: registerAuthDto.username,
+        email: registerAuthDto.email,
+        password: hashedPassword,
+        updatedAt: new Date()
+      }
+    );
+
+    const transformedUser = plainToInstance(User, user);
+    
+    return transformedUser;
+  }
+
 
 }
