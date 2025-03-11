@@ -14,29 +14,28 @@ import { ProductsController } from 'src/products/products.controller';
     constructor(private jwtService: JwtService) {}
   
     async canActivate(context: ExecutionContext): Promise<boolean> {
+      // extrae la request  del contexto
       const request = context.switchToHttp().getRequest();
-      const token = this.extractTokenFromHeader(request);
-      if (!token) {
-        throw new UnauthorizedException();
-      }
-      try {
-        const payload = await this.jwtService.verifyAsync(
-          token,
-          {
-            secret: process.env.JWT_SECRET
-          }
-        );
+    // extrae el header de la request
+      const authHeader = request.headers.authorization;
 
-        request['user'] = payload;
-      } catch {
-        throw new UnauthorizedException();
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new UnauthorizedException("Missing or invalid token");
       }
-      return true;
-    }
+      // usamos split para obtener solo la parte del token
+      const token = authHeader.split(' ')[1];
+
+      // valida el token con verify
+      try {
+        request.user = this.jwtService.verify(token, {
+          secret: process.env.JWT_SECRET || 'supersecret',
+        });
+        return true;
+      } catch (error) {
+        console.log(error);
   
-    private extractTokenFromHeader(request: Request): string | undefined {
-      const [type, token] = request.headers.authorization?.split(' ') ?? [];
-      return type === 'Bearer' ? token : undefined;
+        throw new UnauthorizedException('Invalid token');
+      }
     }
   }
   

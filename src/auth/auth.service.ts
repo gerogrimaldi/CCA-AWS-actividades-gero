@@ -20,10 +20,16 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
     // el payload genera los claims del token
-    // los claims 
-    const payload = { username: user.username, email: user.email };
+    const payload = { 
+      username: user.username, 
+      email: user.email ,
+      roles: Array.isArray(user.Role) ? user.Role : [user.Role],
+    };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET || "supersecret",
+        expiresIn: '10m'
+      }),
     };
   }
 
