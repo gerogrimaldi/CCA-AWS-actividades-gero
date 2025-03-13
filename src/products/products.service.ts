@@ -1,11 +1,15 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'prisma/prisma.service';
+import { NotifGateway } from 'src/notif/notif.gateway';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly notificacionsGateway: NotifGateway
+  ) {}
 
   async create(createProductDto: CreateProductDto) {
     const existingProduct = await this.prisma.product.findFirst({
@@ -58,6 +62,14 @@ export class ProductsService {
       where: {id: id},
       data: updateProductDto
     });
+
+    if(
+      updatedProduct.stock !== undefined &&
+      updatedProduct.stock !== product.stock
+    ) {
+      this.notificacionsGateway.handleStockUpdate(updatedProduct.name, updatedProduct.stock);
+    }
+
     return `Product with id: ${updatedProduct.id} updated successfully`;
   }
 
