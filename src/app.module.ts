@@ -6,10 +6,11 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config'; //necesario para procesar las variables de entornjo
 import { AuthModule } from './auth/auth.module';
 import { NotifGateway } from './notif/notif.gateway';
+import { S3Module } from './s3/s3.module';
 
 
 @Module({
-  imports: [PrismaModule, ProductsModule, UsersModule, ConfigModule.forRoot(), AuthModule],
+  imports: [PrismaModule, ProductsModule, UsersModule, ConfigModule.forRoot(), AuthModule, S3Module],
   // config Module lee si tenemos variables de entornos (en el .env) y nos la procesa
   controllers: [],
   providers: [NotifGateway],
