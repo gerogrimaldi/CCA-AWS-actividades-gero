@@ -15,4 +15,6 @@ export class CreateProductDto {
   @MaxLength(100)
   @ApiProperty()
   description: string;
+
+  stock:number;
 }
